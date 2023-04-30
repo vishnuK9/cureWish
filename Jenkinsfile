@@ -36,7 +36,7 @@ pipeline {
             steps{
                 withAWS(credentials: 'ecs-demo-jenkins-user', region: "${AWS_DEFAULT_REGION}") {
                     script {
-			            sh 'sudo ./script.sh'
+			            sh './script.sh'
                     }
                 }    
             }

@@ -27,14 +27,14 @@ pipeline {
                     // some block
                     sh 'docker login -u vishnu99docker -p ${dockerhub}'
                     sh 'docker image push vishnu99docker/apache_image:${IMAGE_TAG}'
-                    sh 'docker image prune -a'
+                    sh 'docker image prune -a -y'
                 }
             }
         }
 
         stage('Deploy') {
             steps{
-                withAWS(credentials: ecs-demo-jenkins-user, region: "${AWS_DEFAULT_REGION}") {
+                withAWS(credentials: 'ecs-demo-jenkins-user', region: "${AWS_DEFAULT_REGION}") {
                     script {
 			            sh './script.sh'
                     }

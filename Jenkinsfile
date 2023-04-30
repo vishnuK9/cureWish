@@ -15,6 +15,7 @@ pipeline {
     stages {
         stage('Building image') {
             steps {
+		sh 'ls'
                 sh 'docker build -t apache_image:${IMAGE_TAG} .'
                 sh 'docker image push apache_image:${IMAGE_TAG}'
                 sh 'docker image tag apache_image:${IMAGE_TAG} apache_image:latest'

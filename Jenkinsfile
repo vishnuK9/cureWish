@@ -15,10 +15,20 @@ pipeline {
     stages {
         stage('Building image') {
             steps {
-		sh 'ls'
+		        sh 'ls'
                 sh 'docker build -t apache_image:${IMAGE_TAG} .'
                 sh 'docker image tag apache_image:${IMAGE_TAG} vishnu99docker/apache_image:latest'
-                sh 'docker image push vishnu99docker/apache_image:latest'
+            }
+        }
+
+        stage('Pushing image') {
+            steps {
+		        withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+                    // some block
+                    sh 'docker login -u vishnu99docker -p ${dockerhub}'
+                    sh 'docker image push vishnu99docker/apache_image:latest'
+                    sh 'docker image prune -a'
+                }
             }
         }
     }

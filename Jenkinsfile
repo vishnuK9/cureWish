@@ -1,4 +1,5 @@
 pipeline {
+    agent any
     environment {
         AWS_ACCOUNT_ID="CHANGE_ME"
         AWS_DEFAULT_REGION="CHANGE_ME" 

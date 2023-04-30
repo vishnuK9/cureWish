@@ -27,7 +27,7 @@ pipeline {
                     // some block
                     sh 'docker login -u vishnu99docker -p ${dockerhub}'
                     sh 'docker image push vishnu99docker/apache_image:${IMAGE_TAG}'
-                    sh 'docker image prune -a -y'
+                    // sh 'docker image prune -a -y'
                 }
             }
         }

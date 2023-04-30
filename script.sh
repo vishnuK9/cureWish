@@ -8,7 +8,7 @@ NAME=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME
 echo "NAME= " $NAME
 
 sed -i "s#BUILD_NUMBER#$IMAGE_TAG#g" task-definition.json
-sed -i "s#REPOSITORY_URI#$REPOSITORY_URI#g" task-definition.json
+sed -i "s#REPOSITORY_URI#$IMAGE_REPO_NAME#g" task-definition.json
 sed -i "s#ROLE_ARN#$ROLE_ARN#g" task-definition.json
 sed -i "s#FAMILY#$FAMILY#g" task-definition.json
 sed -i "s#NAME#$NAME#g" task-definition.json

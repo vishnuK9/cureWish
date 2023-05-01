@@ -1,9 +1,9 @@
 {
-    "family": FAMILY,
+    "family": "ecs-demo-task",
     "containerDefinitions": [
         {
-            "image": "REPOSITORY_URI:BUILD_NUMBER",
-            "name": NAME,
+            "image": "vishnu99docker/apache_image:",
+            "name": "ecs-apache",
 	    "essential": true,
             "portMappings": [
                 {
@@ -19,5 +19,5 @@
              "FARGATE"
     ],
     "networkMode": "awsvpc",
-    "executionRoleArn": ROLE_ARN 
+    "executionRoleArn": "arn:aws:iam::518234350460:role/ecsTaskExecutionRole" 
 }

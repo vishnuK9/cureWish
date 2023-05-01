@@ -35,7 +35,9 @@ pipeline {
         stage('Deploy') {
             steps{
                 withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
-                    script { sh './script.sh' }
+                    script { 
+                        sh 'ls' 
+                        sh './script.sh' }
                 }    
             }
         }  

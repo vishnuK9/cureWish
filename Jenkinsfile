@@ -36,7 +36,7 @@ pipeline {
             steps{
                 withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
                     script { 
-                        sh 'ls -la task-definition.json' 
+                        sh 'chmod +x *' 
                         sh './script.sh' }
                 }    
             }

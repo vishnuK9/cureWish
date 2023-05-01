@@ -7,7 +7,7 @@ echo "FAMILY= " $FAMILY
 NAME=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.containerDefinitions[].name`
 echo "NAME= " $NAME
 
-sudo sed -i "s#BUILD_NUMBER#$IMAGE_TAG#g" task-definition.json
+sed -i "s#BUILD_NUMBER#$IMAGE_TAG#g" task-definition.json
 sed -i "s#REPOSITORY_URI#$IMAGE_REPO_NAME#g" task-definition.json
 sed -i "s#ROLE_ARN#$ROLE_ARN#g" task-definition.json
 sed -i "s#FAMILY#$FAMILY#g" task-definition.json

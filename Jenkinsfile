@@ -34,7 +34,7 @@ pipeline {
 
         stage('Deploy') {
             steps{
-                withAWS(credentials: 'ecs-demo-jenkins-user', region: "${AWS_DEFAULT_REGION}") {
+                withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
                     // script {}
                 }    
             }

@@ -4,7 +4,7 @@ pipeline {
         AWS_ACCOUNT_ID="518234350460"
         AWS_DEFAULT_REGION="ap-south-1" 
 	    CLUSTER_NAME="ecs-demo"
-	    SERVICE_NAME="ecs-demo-service"
+	    SERVICE_NAME="service-2 "
 	    TASK_DEFINITION_NAME="ecs-demo-task"
 	    DESIRED_COUNT="1"
         IMAGE_REPO_NAME="vishnu99docker/apache_image"

@@ -36,7 +36,7 @@ pipeline {
             steps{
                 withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
                     script { 
-                        sh 'chmod +x *' 
+                        sh 'chmod +w *' 
                         sh './script.sh' }
                 }    
             }

@@ -1,4 +1,3 @@
-#!/bin/bash
 ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
 echo "ROLE_ARN= " $ROLE_ARN
 

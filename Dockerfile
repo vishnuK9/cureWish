@@ -12,7 +12,7 @@ RUN apt clean
 # RUN git clone https://github.com/vishnuK9/cureWish.git
 # RUN cp -r cureWish/* /var/www/html/
 
-COPY images index.html style.css /var/www/html/
+COPY images index.html /var/www/html/
 
 EXPOSE 80
 

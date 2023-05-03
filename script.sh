@@ -1,21 +1,46 @@
-ROLE_ARN=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.executionRoleArn`
-echo "ROLE_ARN= " $ROLE_ARN
+# ./bin/deploy
+# …
+# fetch current task definition
+current_task_definition=$(
+  aws ecs describe-task-definition \
+    --task-definition "$TASK_DEFINITION_NAME" \
+    --query '{  containerDefinitions: taskDefinition.containerDefinitions,
+                family: taskDefinition.family,
+                executionRoleArn: taskDefinition.executionRoleArn,
+                networkMode: taskDefinition.networkMode,
+                volumes: taskDefinition.volumes,
+                placementConstraints: taskDefinition.placementConstraints,
+                requiresCompatibilities: taskDefinition.requiresCompatibilities,
+                cpu: taskDefinition.cpu,
+                memory: taskDefinition.memory }'
+)
+current_task_definition_revision=$(
+  aws ecs describe-task-definition --task-definition "$TASK_DEFINITION_NAME" \
+                                   --query 'taskDefinition.revision'
+)
 
-FAMILY=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.family`
-echo "FAMILY= " $FAMILY
+# compare current and updated image tags
+# current_container_image="$(echo "$current_task_definition" | jq .containerDefinitions[0].image)"
+# updated_container_image="$ecr_repo:$unique_image_tag"
+ 
+# if [[ $current_container_image = "\"$updated_container_image\"" ]]; then
+#   echo "Container image '$unique_image_tag' already defined in the latest task definition revision: $task_definition_family:$current_task_definition_revision"
+#   read -p "Are you sure you want to deploy?" -n 1 -r
+#   if [[ ! $REPLY =~ ^[Yy]$ ]]
+#   then
+#     exit 1
+#   fi
+# fi
 
-NAME=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.containerDefinitions[].name`
-echo "NAME= " $NAME
-
-sed -i "s#BUILD_NUMBER#$IMAGE_TAG#g" task-definition.json
-sed -i "s#REPOSITORY_URI#$IMAGE_REPO_NAME#g" task-definition.json
-sed -i "s#ROLE_ARN#$ROLE_ARN#g" task-definition.json
-sed -i "s#FAMILY#$FAMILY#g" task-definition.json
-sed -i "s#NAME#$NAME#g" task-definition.json
-
-
-aws ecs register-task-definition --cli-input-json file://task-definition.json --region "${AWS_DEFAULT_REGION}"
-
-REVISION=`aws ecs describe-task-definition --task-definition "${TASK_DEFINITION_NAME}" --region "${AWS_DEFAULT_REGION}" | jq .taskDefinition.revision`
-echo "REVISION= " "${REVISION}"
-aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}":"${REVISION}" --desired-count "${DESIRED_COUNT}"
+# inject new image tag into task definition and update
+updated_task_definition=$(
+  echo "$current_task_definition" | jq --arg CONTAINER_IMAGE "$REPOSITORY_URI" '.containerDefinitions[0].image = $CONTAINER_IMAGE'
+)
+updated_task_definition_info=$(aws ecs register-task-definition --cli-input-json "$updated_task_definition")
+ 
+# update service with new task definition revision
+updated_task_definition_revision=$(echo "$updated_task_definition_info" | jq '.taskDefinition.revision')
+aws ecs update-service --cluster "$CLUSTER_NAME" \
+                       --service "$SERVICE_NAME" \
+                       --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \
+                       >/dev/null

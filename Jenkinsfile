@@ -33,7 +33,35 @@ pipeline {
             steps{
                 withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
                     script { 
-                        sh './script.sh'
+                        sh '''
+                            current_task_definition=$(
+                                aws ecs describe-task-definition \
+                                --task-definition "$TASK_DEFINITION_NAME" \
+                                --query '{  containerDefinitions: taskDefinition.containerDefinitions,
+                                family: taskDefinition.family,
+                                executionRoleArn: taskDefinition.executionRoleArn,
+                                networkMode: taskDefinition.networkMode,
+                                volumes: taskDefinition.volumes,
+                                placementConstraints: taskDefinition.placementConstraints,
+                                requiresCompatibilities: taskDefinition.requiresCompatibilities,
+                                cpu: taskDefinition.cpu,
+                                memory: taskDefinition.memory }'
+                            )
+                            current_task_definition_revision=$(
+                                aws ecs describe-task-definition --task-definition "$TASK_DEFINITION_NAME" \
+                               --query 'taskDefinition.revision'
+                            )
+
+                            updated_task_definition=$(echo "$current_task_definition" | jq --arg CONTAINER_IMAGE "$REPOSITORY_URI" '.containerDefinitions[0].image = $CONTAINER_IMAGE')
+                            updated_task_definition_info=$(aws ecs register-task-definition --cli-input-json "$updated_task_definition")
+
+                            updated_task_definition_revision=$(echo "$updated_task_definition_info" | jq '.taskDefinition.revision')
+                            aws ecs update-service --cluster "$CLUSTER_NAME" \
+                                --service "$SERVICE_NAME" \
+                                --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \
+                                --deployment-configuration "deploymentCircuitBreaker={enable=true,rollback=true},maximumPercent=200,minimumHealthyPercent=100" \                            
+                                >/dev/null
+                        '''
                     }
                 }    
             }

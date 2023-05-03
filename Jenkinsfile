@@ -20,9 +20,13 @@ pipeline {
         }
         stage('Pushing image') {
             steps {
-                sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 518234350460.dkr.ecr.ap-south-1.amazonaws.com'
-                sh 'docker push ${REPOSITORY_URI}:latest'
-                sh 'docker system prune -f'
+                withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
+                    script { 
+                        sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 518234350460.dkr.ecr.ap-south-1.amazonaws.com'
+                        sh 'docker push ${REPOSITORY_URI}:latest'
+                        sh 'docker system prune -f'
+                    }
+                }
             }
         }
         stage('Deploy') {

@@ -56,10 +56,10 @@ pipeline {
                             updated_task_definition_info=$(aws ecs register-task-definition --cli-input-json "$updated_task_definition")
 
                             updated_task_definition_revision=$(echo "$updated_task_definition_info" | jq '.taskDefinition.revision')
-                            aws ecs update-service --cluster "$CLUSTER_NAME" \
-                                --service "$SERVICE_NAME" \
-                                --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \
-                                --deployment-configuration "deploymentCircuitBreaker={enable=true,rollback=true},maximumPercent=200,minimumHealthyPercent=100" \                            
+                            aws ecs update-service --cluster "$CLUSTER_NAME" \\
+                                --service "$SERVICE_NAME" \\
+                                --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \\
+                                --deployment-configuration "deploymentCircuitBreaker={enable=true,rollback=true},maximumPercent=200,minimumHealthyPercent=100" \\                            
                                 >/dev/null
                         '''
                     }

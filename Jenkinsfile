@@ -52,7 +52,7 @@ pipeline {
                                --query 'taskDefinition.revision'
                             )
 
-                            updated_task_definition=$(echo "${current_task_definition}" | jq --arg CONTAINER_IMAGE "${REPOSITORY_URI}" '.containerDefinitions[0].image = ${CONTAINER_IMAGE}')
+                            updated_task_definition=$(echo "${current_task_definition}" | jq --arg CONTAINER_IMAGE "${REPOSITORY_URI}" '.containerDefinitions[0].image = $CONTAINER_IMAGE')
                             updated_task_definition_info=$(aws ecs register-task-definition --cli-input-json "${updated_task_definition}")
 
                             updated_task_definition_revision=$(echo "${updated_task_definition_info}" | jq '.taskDefinition.revision')

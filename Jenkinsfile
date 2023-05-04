@@ -59,8 +59,9 @@ pipeline {
                             aws ecs update-service --cluster "$CLUSTER_NAME" \\
                                 --service "$SERVICE_NAME" \\
                                 --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \\
-                                --deployment-configuration "deploymentCircuitBreaker={enable=true,rollback=true}" \\
                                 --desired-count "${DESIRED_COUNT}
+                            aws ecs update-service --cluster <cluster-name> --service <service-name> --deployment-configuration "minimumHealthyPercent=100,maximumPercent=200"
+
                         '''
                     }
                 }    

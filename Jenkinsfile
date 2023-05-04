@@ -59,7 +59,7 @@ pipeline {
                             aws ecs update-service --cluster "$CLUSTER_NAME" \\
                                 --service "$SERVICE_NAME" \\
                                 --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \\
-                                --deployment-configuration "deploymentCircuitBreaker={enable=true,rollback=true},maximumPercent=200,minimumHealthyPercent=100" \\                            
+                                --deployment-configuration "deploymentCircuitBreaker={enable=true,rollback=true}" \\                            
                                 >/dev/null
                         '''
                     }

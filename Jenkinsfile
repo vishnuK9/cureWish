@@ -10,7 +10,7 @@ pipeline {
         IMAGE_REPO_NAME="apache"
         IMAGE_TAG="${env.BUILD_ID}"
         REPOSITORY_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-	    registryCredential = "CHANGE_ME"
+	    // registryCredential = "CHANGE_ME"
     }
     stages {
         stage('Building image') {
@@ -56,10 +56,7 @@ pipeline {
                             updated_task_definition_info=$(aws ecs register-task-definition --cli-input-json "$updated_task_definition")
 
                             updated_task_definition_revision=$(echo "$updated_task_definition_info" | jq '.taskDefinition.revision')
-                            aws ecs update-service --cluster "$CLUSTER_NAME" \\
-                                --service "$SERVICE_NAME" \\
-                                --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" \\
-                                --desired-count "${DESIRED_COUNT}
+                            aws ecs update-service --cluster "$CLUSTER_NAME" --service "$SERVICE_NAME" --task-definition "$TASK_DEFINITION_NAME:$updated_task_definition_revision" --desired-count "${DESIRED_COUNT}
                         '''
                     }
                 }    

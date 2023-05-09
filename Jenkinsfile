@@ -58,11 +58,12 @@ pipeline {
                             updated_task_definition_revision=$(echo "${updated_task_definition_info}" | jq '.taskDefinition.revision')
                             aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${updated_task_definition_revision}" --desired-count "${DESIRED_COUNT}"
                             
-                            mssg=$(aws ecs wait services-stable --cluster ecs-demo --service service-2)
-                            if [[ $mssg == "" ]]
+                            str=$(aws ecs wait services-stable --cluster ecs-demo --service service-2)
+                        
+                            if [[ $str == " " ]]
                             then
-                                echo $a
                                 aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${current_task_definition_revision}" --desired-count "${DESIRED_COUNT}"
+	                            echo $str
                             fi
                         '''
                     }

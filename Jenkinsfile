@@ -34,6 +34,7 @@ pipeline {
                 withAWS(credentials: 'demo-admin-user', region: "${AWS_DEFAULT_REGION}") {
                     script { 
                         sh '''
+                            #!/bin/sh
                             current_task_definition=$(
                                 aws ecs describe-task-definition \
                                 --task-definition "${TASK_DEFINITION_NAME}" \
@@ -60,7 +61,7 @@ pipeline {
                             
                             str=""
                         
-                            if [ "$str" == "" ]
+                            if [ -z $str ]
                             then
                                 aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${current_task_definition_revision}" --desired-count "${DESIRED_COUNT}"
 	                            echo $str

@@ -59,10 +59,10 @@ pipeline {
                             aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${updated_task_definition_revision}" --desired-count "${DESIRED_COUNT}"
                             
                             mssg=$(aws ecs wait services-stable --cluster ecs-demo --service service-2)
-                            if (mssg == ""){
+                            if [ mssg == "" ] then
                                 echo $a
                                 aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${current_task_definition_revision}" --desired-count "${DESIRED_COUNT}"
-                            }
+                            fi
                         '''
                     }
                 }    

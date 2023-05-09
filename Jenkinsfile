@@ -71,9 +71,7 @@ pipeline {
         post {
             failure {
                 // Rollback to the previous task definition in case of deployment failure
-                withAWS(credentials: 'aws-credentials') {
-                sh "aws ecs update-service --cluster ${clusterName} --service ${serviceName} --task-definition ${LATEST_TASK}"
-                }
+                sh 'aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${current_task_definition_revision}" --desired-count "${DESIRED_COUNT}"'
             } 
         }
     }

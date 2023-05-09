@@ -68,6 +68,13 @@ pipeline {
                 }    
             }
         }  
-
+        post {
+            failure {
+                // Rollback to the previous task definition in case of deployment failure
+                withAWS(credentials: 'aws-credentials') {
+                sh "aws ecs update-service --cluster ${clusterName} --service ${serviceName} --task-definition ${LATEST_TASK}"
+                }
+            } 
+        }
     }
 }

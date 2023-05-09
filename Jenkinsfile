@@ -57,6 +57,7 @@ pipeline {
 
                             updated_task_definition_revision=$(echo "${updated_task_definition_info}" | jq '.taskDefinition.revision')
                             aws ecs update-service --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}" --task-definition "${TASK_DEFINITION_NAME}:${updated_task_definition_revision}" --desired-count "${DESIRED_COUNT}
+                            aws ecs wait services-stable --cluster "${CLUSTER_NAME}" --service "${SERVICE_NAME}"
                         '''
                     }
                 }    
